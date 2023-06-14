@@ -1,7 +1,11 @@
-use actix_web::{App, HttpServer, middleware::{Logger, self}, web, HttpResponse, http::StatusCode};
-use diesel::PgConnection;
+use actix_web::{
+    http::StatusCode,
+    middleware::{self, Logger},
+    web, App, HttpResponse, HttpServer,
+};
 use diesel::r2d2;
 use diesel::r2d2::Pool;
+use diesel::PgConnection;
 use dotenvy::dotenv;
 use std::env;
 
@@ -14,8 +18,7 @@ async fn not_found() -> HttpResponse {
 
 fn get_connection_pool() -> DbPool {
     dotenv().ok();
-    let database_url = env::var("DATABASE_URL")
-        .expect("DATABASE_URL must be defined");
+    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be defined");
     let connection_manager = r2d2::ConnectionManager::<PgConnection>::new(database_url);
     Pool::builder()
         .test_on_check_out(true)

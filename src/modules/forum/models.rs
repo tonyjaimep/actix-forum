@@ -3,7 +3,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::schema::forums;
 
-#[derive(Clone, Serialize, Deserialize, Queryable, PartialEq, Insertable, Selectable)]
+#[derive(
+    AsChangeset, Clone, Deserialize, Insertable, PartialEq, Queryable, Selectable, Serialize,
+)]
 pub struct Forum {
     pub id: String,
     pub title: String,

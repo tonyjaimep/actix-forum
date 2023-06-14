@@ -1,9 +1,23 @@
 use actix_web::error;
 use actix_web::{web, HttpResponse, Responder, Scope};
+use serde::Deserialize;
 
 use super::models::Forum;
 use super::utils::*;
 use crate::db_pool::DbPool;
+
+#[derive(Deserialize)]
+struct CreateForumDTO {
+    pub id: String,
+    pub title: String,
+    pub description: String,
+}
+
+#[derive(Deserialize)]
+struct UpdateForumDTO {
+    pub title: String,
+    pub description: String,
+}
 
 async fn find_all(db_pool: web::Data<DbPool>) -> actix_web::Result<impl Responder> {
     let all_forums = get_all_forums(db_pool)
@@ -57,7 +71,12 @@ async fn update(
 ) -> impl Responder {
     let forum_id = path.into_inner();
 
-    let updated_forum = updated_forum.into_inner();
+    let updated_forum_dto = updated_forum.into_inner();
+    let updated_forum = Forum {
+        id: forum_id.clone(),
+        title: updated_forum_dto.title,
+        description: Some(updated_forum_dto.description),
+    };
 
     let forum = update_forum(forum_id, updated_forum, db_pool)
         .await
