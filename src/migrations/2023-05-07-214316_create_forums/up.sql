@@ -1,5 +1,5 @@
 CREATE TABLE forums (
-  id VARCHAR(8) PRIMARY KEY,
+  id VARCHAR PRIMARY KEY,
   title VARCHAR NOT NULL,
   description VARCHAR
 )

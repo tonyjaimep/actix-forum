@@ -51,13 +51,11 @@ async fn find_one(path: web::Path<String>, db_pool: web::Data<DbPool>) -> impl R
     let forum_id = path.into_inner();
     let forum_id_copy = forum_id.clone();
 
-    let forum = find_one_forum(forum_id, db_pool)
-        .await
-        .map_err(error::ErrorInternalServerError)?;
+    let forum = find_one_forum(forum_id, db_pool).await;
 
     match forum {
-        Some(forum) => Ok::<HttpResponse, actix_web::Error>(HttpResponse::Ok().json(forum)),
-        None => {
+        Ok(forum) => Ok::<HttpResponse, actix_web::Error>(HttpResponse::Ok().json(forum)),
+        Err(_) => {
             Ok(HttpResponse::NotFound()
                 .body(format!("Could not find forum with id {forum_id_copy}")))
         }

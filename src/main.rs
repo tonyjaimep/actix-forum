@@ -11,6 +11,8 @@ use std::env;
 
 use actix_forum::db_pool::DbPool;
 use actix_forum::modules::forum;
+use actix_forum::modules::post;
+use actix_forum::modules::thread;
 
 async fn not_found() -> HttpResponse {
     HttpResponse::build(StatusCode::NOT_FOUND).body("Not found")
@@ -38,6 +40,8 @@ async fn main() -> std::io::Result<()> {
             .wrap(Logger::default())
             .wrap(middleware::NormalizePath::trim())
             .service(forum::service::setup())
+            .service(thread::service::setup())
+            .service(post::service::setup())
             .default_service(web::route().to(not_found))
     })
     .bind(("0.0.0.0", 8080))?
